@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.SalaryReportMapper" >
+
+  <resultMap id="BaseResultMap" type="com.pojo.SalaryReport" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="emp_id" property="empId" jdbcType="INTEGER" />
+    <result column="payroll_id" property="payrollId" jdbcType="INTEGER" />
+    <result column="basic_wage" property="basicWage" jdbcType="DOUBLE" />
+    <result column="overtime_premium" property="overtimePremium" jdbcType="DOUBLE" />
+    <result column="other_bonuses" property="otherBonuses" jdbcType="DOUBLE" />
+    <result column="other_subsidies" property="otherSubsidies" jdbcType="DOUBLE" />
+    <result column="other_additions" property="otherAdditions" jdbcType="DOUBLE" />
+    <result column="absenteeism_deductions" property="absenteeismDeductions" jdbcType="DOUBLE" />
+    <result column="sick_leave_deductions" property="sickLeaveDeductions" jdbcType="DOUBLE" />
+    <result column="other_deductions" property="otherDeductions" jdbcType="DOUBLE" />
+    <result column="endowment_insurance" property="endowmentInsurance" jdbcType="DOUBLE" />
+    <result column="medical_insurance" property="medicalInsurance" jdbcType="DOUBLE" />
+    <result column="unemployment_insurance" property="unemploymentInsurance" jdbcType="DOUBLE" />
+    <result column="accumulation_fund" property="accumulationFund" jdbcType="DOUBLE" />
+    <result column="individual_income_tax" property="individualIncomeTax" jdbcType="DOUBLE" />
+    <association property="employee" column="emp_id" select="com.mapper.EmployeeMapper.selectByPrimaryKey">
+    </association>
+    <association property="payroll" column="payroll_id" select="com.mapper.PayrollMapper.selectByPrimaryKey">
+    </association>
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from salary_report
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteByIds">
+      delete from salary_report
+      where id in
+      <foreach collection="ids" item="id" separator="," open="(" close=")">
+        #{id}
+      </foreach>
+  </delete>
+
+  <delete id="deleteByPayrollId">
+    delete from salary_report
+    where payroll_id = #{payrollId}
+  </delete>
+
+  <delete id="deleteByPayrollIds">
+    delete from salary_report
+    where payroll_id in
+    <foreach collection="payrollIds" item="payrollId" separator="," open="(" close=")">
+      #{payrollId}
+    </foreach>
+  </delete>
+
+  <delete id="deleteByEmpId">
+    delete from salary_report
+    where emp_id = #{empId}
+  </delete>
+
+  <insert id="insert" parameterType="com.pojo.SalaryReport" useGeneratedKeys="true" keyProperty="id" >
+    insert into salary_report (emp_id, payroll_id, basic_wage, 
+      overtime_premium, other_bonuses, other_subsidies, 
+      other_additions, absenteeism_deductions, 
+      sick_leave_deductions, other_deductions, 
+      endowment_insurance, medical_insurance, unemployment_insurance, 
+      accumulation_fund, individual_income_tax)
+    values (#{empId,jdbcType=INTEGER}, #{payrollId,jdbcType=INTEGER}, #{basicWage,jdbcType=DOUBLE},
+      #{overtimePremium,jdbcType=DOUBLE}, #{otherBonuses,jdbcType=DOUBLE}, #{otherSubsidies,jdbcType=DOUBLE},
+      #{otherAdditions,jdbcType=DOUBLE}, #{absenteeismDeductions,jdbcType=DOUBLE},
+      #{sickLeaveDeductions,jdbcType=DOUBLE}, #{otherDeductions,jdbcType=DOUBLE},
+      #{endowmentInsurance,jdbcType=DOUBLE}, #{medicalInsurance,jdbcType=DOUBLE}, #{unemploymentInsurance,jdbcType=DOUBLE},
+      #{accumulationFund,jdbcType=DOUBLE}, #{individualIncomeTax,jdbcType=DOUBLE})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.pojo.SalaryReport" >
+    update salary_report
+    set emp_id = #{empId,jdbcType=INTEGER},
+      payroll_id = #{payrollId,jdbcType=INTEGER},
+      basic_wage = #{basicWage,jdbcType=DOUBLE},
+      overtime_premium = #{overtimePremium,jdbcType=DOUBLE},
+      other_bonuses = #{otherBonuses,jdbcType=DOUBLE},
+      other_subsidies = #{otherSubsidies,jdbcType=DOUBLE},
+      other_additions = #{otherAdditions,jdbcType=DOUBLE},
+      absenteeism_deductions = #{absenteeismDeductions,jdbcType=DOUBLE},
+      sick_leave_deductions = #{sickLeaveDeductions,jdbcType=DOUBLE},
+      other_deductions = #{otherDeductions,jdbcType=DOUBLE},
+      endowment_insurance = #{endowmentInsurance,jdbcType=DOUBLE},
+      medical_insurance = #{medicalInsurance,jdbcType=DOUBLE},
+      unemployment_insurance = #{unemploymentInsurance,jdbcType=DOUBLE},
+      accumulation_fund = #{accumulationFund,jdbcType=DOUBLE},
+      individual_income_tax = #{individualIncomeTax,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, emp_id, payroll_id, basic_wage, overtime_premium, other_bonuses, other_subsidies, 
+    other_additions, absenteeism_deductions, sick_leave_deductions, other_deductions, 
+    endowment_insurance, medical_insurance, unemployment_insurance, accumulation_fund, 
+    individual_income_tax
+    from salary_report
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select sr.id, emp_id, payroll_id, basic_wage, overtime_premium, other_bonuses, other_subsidies,
+    other_additions, absenteeism_deductions, sick_leave_deductions, other_deductions,
+    endowment_insurance, medical_insurance, unemployment_insurance, accumulation_fund,
+    individual_income_tax
+    from salary_report sr
+    join payroll p on sr.payroll_id = p.id
+    join employee e on sr.emp_id = e.id
+    <where>
+      <if test="name != null and name != ''">
+        e.name like concat('%',#{name},'%')
+      </if>
+      <if test="payrollId != null">
+        and sr.payroll_id = #{payrollId}
+      </if>
+    </where>
+    order by p.name desc, e.name desc
+  </select>
+
+  <select id="selectByEmpIdAndPayrollId" resultMap="BaseResultMap">
+    select id, emp_id, payroll_id, basic_wage, overtime_premium, other_bonuses, other_subsidies,
+    other_additions, absenteeism_deductions, sick_leave_deductions, other_deductions,
+    endowment_insurance, medical_insurance, unemployment_insurance, accumulation_fund,
+    individual_income_tax
+    from salary_report
+    where emp_id = #{empId} and payroll_id = #{payrollId}
+  </select>
+
+  <select id="selectByPayrollId" resultMap="BaseResultMap">
+    select id, emp_id, payroll_id, basic_wage, overtime_premium, other_bonuses, other_subsidies,
+    other_additions, absenteeism_deductions, sick_leave_deductions, other_deductions,
+    endowment_insurance, medical_insurance, unemployment_insurance, accumulation_fund,
+    individual_income_tax
+    from salary_report
+    where payroll_id = #{payrollId}
+  </select>
+
+</mapper>

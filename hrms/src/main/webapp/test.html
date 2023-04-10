@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">{{result}}</div>
+</body>
+<script src="js/vue.js"></script>
+<script src="js/axios-0.18.0.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        mounted() {
+            axios({
+                method: "post",
+                url: "http://localhost:80/department/selectOptionalParentDepartment",
+                data:10,
+                    //{payrollId:1, name:"汐"},
+                    //{name:"",payrollId:""},
+                headers: {'Content-Type': 'application/json;charset=utf-8'}
+            }).then(resp => {
+                this.result = resp.data
+            })
+        },
+        data() {
+            return {
+                result: null
+            }
+        }
+    })
+</script>
+</html>

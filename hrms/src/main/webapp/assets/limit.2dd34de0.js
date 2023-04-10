@@ -1,0 +1,1 @@
+import{r as e}from"./request.5f96fccc.js";const o=t=>e({url:"/permission/selectAll",method:"post",data:{name:t}}),r=t=>e({url:"/permission/selectByRoleId",method:"post",data:t,headers:{"Content-Type":"application/json;charset=utf-8"}}),i=t=>e({url:"/permission/allotPermission",method:"post",data:t});export{o as a,i as c,r as g};

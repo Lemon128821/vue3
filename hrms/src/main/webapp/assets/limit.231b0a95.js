@@ -1,0 +1,1 @@
+import{s as n,d as l}from"./index.bbbda2ab.js";const s=n("limit",()=>{const t=l(null);function e(u){t.value=u}function i(){t.value=null}return{limit:t,updateLimit:e,deleteLimit:i}},{persist:!0});export{s as u};
